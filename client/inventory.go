@@ -119,6 +119,11 @@ type ContainerListElement struct {
 	Type             string `json:"type"`
 }
 
+type GetInventoryConfigResponse struct {
+	Output   string   `json:"output"`
+	Warnings []string `json:"warnings"`
+}
+
 // AddDevice adds a device into CVP's inventory
 func (c *CvpClient) AddDevice(ipAddr string, cn string) error {
 	container, err := c.GetContainerByName(cn)
@@ -171,6 +176,19 @@ func (c *CvpClient) GetDevice(hostname string) (*NetElement, error) {
 		return nil, fmt.Errorf("No devices returned")
 	}
 	return &respDevice.NetElementList[0], err
+}
+
+// GetInventoryConfig returns the configuration retrieved from a netelement.
+func (c *CvpClient) GetInventoryConfig(netElemendID string) (string, error) {
+	url := "/inventory/getInventoryConfiguration.do?netElementId=" + netElemendID
+	respbody, err := c.Get(url)
+	respData := GetInventoryConfigResponse{}
+	err = json.Unmarshal(respbody, &respData)
+	if err != nil {
+		log.Printf("Error decoding getInventoryConfiguration :%s\n", err)
+		return "", err
+	}
+	return respData.Output, nil
 }
 
 // Returns a container that exactly matches the name.

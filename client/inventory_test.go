@@ -74,6 +74,18 @@ func TestGetDevices(t *testing.T) {
 	t.Logf("Retrieved %+v", dev)
 }
 
+func TestGetDeviceConfig(t *testing.T) {
+	//cvpInfo := CVPInfo{IPAddress: "10.90.224.178", Username: "cvpadmin", Password: "arista123", Container: "CoreSite"}
+	testdata := buildTestData()
+	cvpInfo := *testdata.CVP
+	cvp := New(cvpInfo.IPAddress, cvpInfo.Username, cvpInfo.Password)
+	config, err := cvp.GetInventoryConfig(testdata.DeviceMAC)
+	if err != nil {
+		t.Errorf("%+v", err)
+	}
+	t.Logf("Retrieved config %s", config)
+}
+
 func TestRemoveDevices(t *testing.T) {
 	//cvpInfo := CVPInfo{IPAddress: "10.90.224.178", Username: "cvpadmin", Password: "arista123", Container: "CoreSite"}
 	testdata := buildTestData()
