@@ -17,6 +17,12 @@ type JsonData struct {
 	ErrorMessage string      `json:"errorMessage"`
 }
 
+type AddConfigletData struct {
+	Data         AddConfigletRepsonse `json:"data"`
+	ErrorCode    string               `json:"errorCode"`
+	ErrorMessage string               `json:"errorMessage"`
+}
+
 type AddConfigletRepsonse struct {
 	Key    string `json:"key"`
 	Name   string `json:"name"`
@@ -102,14 +108,13 @@ func checkErrors(data JsonData) error {
 }
 
 // AddConfiglet adds configlet to CVP
-func (c *CvpClient) AddConfiglet(cfglet Configlet) (JsonData, error) {
+func (c *CvpClient) AddConfiglet(cfglet Configlet) (AddConfigletData, error) {
 	addConfigletURL := "/configlet/addConfiglet.do"
 	resp, err := c.Call(cfglet, addConfigletURL)
-	responseBody := JsonData{}
+	responseBody := AddConfigletData{}
 	if err = json.Unmarshal(resp, &responseBody); err != nil {
 		log.Printf("Error adding configlet %+v", err)
 	}
-	err = checkErrors(responseBody)
 	return responseBody, err
 }
 
