@@ -102,18 +102,15 @@ func checkErrors(data JsonData) error {
 }
 
 // AddConfiglet adds configlet to CVP
-func (c *CvpClient) AddConfiglet(name, config string) error {
+func (c *CvpClient) AddConfiglet(cfglet Configlet) (JsonData, error) {
 	addConfigletURL := "/configlet/addConfiglet.do"
-	configlet := Configlet{
-		Name:   name,
-		Config: config,
-	}
-	resp, err := c.Call(configlet, addConfigletURL)
+	resp, err := c.Call(cfglet, addConfigletURL)
 	responseBody := JsonData{}
 	if err = json.Unmarshal(resp, &responseBody); err != nil {
 		log.Printf("Error adding configlet %+v", err)
 	}
-	return checkErrors(responseBody)
+	err = checkErrors(responseBody)
+	return responseBody, err
 }
 
 // DeleteConfiglet deletes configlet from CVP

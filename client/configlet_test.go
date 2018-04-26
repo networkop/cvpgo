@@ -61,7 +61,11 @@ func TestAddConfiglet(t *testing.T) {
 	t.Logf("Test data: %+v", data)
 	cvpInfo := CVPInfo{IPAddress: data.CvpIP, Username: data.CvpUser, Password: data.CvpPwd, Container: data.CvpContainer}
 	cvp := New(cvpInfo.IPAddress, cvpInfo.Username, cvpInfo.Password)
-	err := cvp.AddConfiglet(data.NewCfglet, data.NewConfig)
+	configlet := Configlet{
+		Name:   data.NewCfglet,
+		Config: data.NewConfig,
+	}
+	_, err := cvp.AddConfiglet(configlet)
 	if err != nil {
 		t.Errorf("Error adding configlet : %s", err)
 	}
@@ -139,7 +143,7 @@ func TestGetConfigletByDeviceID(t *testing.T) {
 	cvpInfo := CVPInfo{IPAddress: data.CvpIP, Username: data.CvpUser, Password: data.CvpPwd, Container: data.CvpContainer}
 	cvp := New(cvpInfo.IPAddress, cvpInfo.Username, cvpInfo.Password)
 	device, err := cvp.GetDevice(data.Device)
-	_, err = cvp.getConfigletByDeviceID(device.Key)
+	_, err = cvp.GetConfigletByDeviceID(device.Key)
 	if err != nil {
 		t.Errorf("Error getting configlet : %s", err)
 	}
