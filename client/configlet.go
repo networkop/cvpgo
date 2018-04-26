@@ -173,7 +173,7 @@ func (c *CvpClient) ConfigSync(hostname string) error {
 // ValidateReconcileAll takes netElementID and validates and reconciles all configlets assigned to a device
 func (c *CvpClient) ValidateReconcileAll(netElementID string) error {
 	url := "/provisioning/v2/validateAndCompareConfiglets.do"
-	cfglets, err := c.getConfigletByDeviceID(netElementID)
+	cfglets, err := c.GetConfigletByDeviceID(netElementID)
 	log.Printf("Got configlets from device %+v", cfglets)
 	req := ValidateRequest{
 		NetElementID: netElementID,
@@ -198,7 +198,7 @@ func (c *CvpClient) ValidateReconcileAll(netElementID string) error {
 func (c *CvpClient) ApplyConfigletToDevice(deviceIP, deviceName, deviceMac string, cnl []string, save bool) error {
 	// func (c *CvpClient) ApplyConfigletToDevice(deviceName, deviceMac string, cnl, ckl, []string) error {
 	// func (c *CvpClient) ApplyConfigletToDevice(deviceIP, deviceName, deviceMac string, cnl, ckl, cbnl, cbkl []string) error {
-	cfgletCurrent, err := c.getConfigletByDeviceID(deviceMac)
+	cfgletCurrent, err := c.GetConfigletByDeviceID(deviceMac)
 	if err != nil {
 		log.Printf("Error retrieving configlets from a device")
 		return err
@@ -272,13 +272,13 @@ func (c *CvpClient) ValidateConfig(deviceMac, config string) error {
 	return err
 }
 
-func (c *CvpClient) getConfigletByDeviceID(deviceMac string) ([]Configlet, error) {
+func (c *CvpClient) GetConfigletByDeviceID(deviceMac string) ([]Configlet, error) {
 	url := "/provisioning/getConfigletsByNetElementId.do?netElementId=" + deviceMac + "&queryParam=&startIndex=0&endIndex=15"
 	respbody, err := c.Get(url)
 	respConfiglet := ConfigletList{}
 	err = json.Unmarshal(respbody, &respConfiglet)
 	if err != nil {
-		log.Printf("Error decoding getConfigletByDeviceID :%s\n", err)
+		log.Printf("Error decoding GetConfigletByDeviceID :%s\n", err)
 		return nil, err
 	}
 	//if len(respConfiglet.List) == 0 {
@@ -356,7 +356,7 @@ func getKeys(cfglets []Configlet) []string {
 
 // RemoveConfigletFromDevice removes configlets (list of strings) from device
 func (c *CvpClient) RemoveConfigletFromDevice(deviceIP, deviceName, deviceMac string, cfgletRemoveNames []string, save bool) error {
-	cfgletAll, err := c.getConfigletByDeviceID(deviceMac)
+	cfgletAll, err := c.GetConfigletByDeviceID(deviceMac)
 	if err != nil {
 		return err
 	}
